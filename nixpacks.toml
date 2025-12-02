@@ -3,10 +3,9 @@ nixPkgs = ['dotnet-sdk_8']
 
 [phases.build]
 cmds = [
-    'cd CustomsBot',
-    'dotnet restore',
-    'dotnet publish -c Release -o /app/out'
+    'dotnet restore CustomsBot/CustomsBot.csproj',
+    'dotnet publish CustomsBot/CustomsBot.csproj -c Release -o out'
 ]
 
 [start]
-cmd = 'dotnet /app/out/CustomsBot.dll'
+cmd = 'dotnet out/CustomsBot.dll'
