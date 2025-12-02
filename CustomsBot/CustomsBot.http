@@ -1,0 +1,6 @@
+@CustomsBot_HostAddress = http://localhost:5085
+
+GET {{CustomsBot_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
