@@ -1,4 +1,6 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using CustomsBot.Services;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Configure Kestrel to use PORT from environment (for Railway/Cloud hosting)
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5085";
@@ -9,6 +11,11 @@ builder.Services.AddControllers();
 
 // Add services to the container.
 builder.Services.AddOpenApi();
+
+// تسجيل الـ Services
+builder.Services.AddSingleton<SessionManager>();
+builder.Services.AddSingleton<MessageHandler>();
+builder.Services.AddHttpClient<WhatsAppService>();
 
 var app = builder.Build();
 

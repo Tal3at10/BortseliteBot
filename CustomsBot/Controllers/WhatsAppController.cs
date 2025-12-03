@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using CustomsBot.Models;
+using CustomsBot.Services;
 
 namespace CustomsBot.Controllers
 {
@@ -8,10 +10,20 @@ namespace CustomsBot.Controllers
     public class WhatsAppController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly SessionManager _sessionManager;
+        private readonly MessageHandler _messageHandler;
+        private readonly WhatsAppService _whatsAppService;
 
-        public WhatsAppController(IConfiguration configuration)
+        public WhatsAppController(
+            IConfiguration configuration,
+            SessionManager sessionManager,
+            MessageHandler messageHandler,
+            WhatsAppService whatsAppService)
         {
             _configuration = configuration;
+            _sessionManager = sessionManager;
+            _messageHandler = messageHandler;
+            _whatsAppService = whatsAppService;
         }
 
         // 1. دالة التحقق (GET)
@@ -53,15 +65,56 @@ namespace CustomsBot.Controllers
         }
 
         // 2. دالة استقبال الرسائل (POST)
-        // هنا ستصل رسائل العملاء لاحقاً
+        // هنا ستصل رسائل العملاء
         [HttpPost("webhook")]
-        public IActionResult ReceiveMessage([FromBody] object payload)
+        public async Task<IActionResult> ReceiveMessage([FromBody] WhatsAppWebhook webhook)
         {
-            // طباعة الرسالة في الشاشة السوداء للتأكد من وصولها
-            Console.WriteLine("📩 تم استقبال رسالة جديدة من واتساب!");
+            try
+            {
+                Console.WriteLine("📩 تم استقبال رسالة جديدة من واتساب!");
 
-            // الرد بـ 200 OK ضروري جداً لكي لا يعتبر فيسبوك أن الرسالة فشلت
-            return Ok();
+                // التحقق من وجود رسائل
+                if (webhook?.Entry == null || !webhook.Entry.Any())
+                {
+                    return Ok();
+                }
+
+                foreach (var entry in webhook.Entry)
+                {
+                    foreach (var change in entry.Changes)
+                    {
+                        if (change.Value?.Messages == null || !change.Value.Messages.Any())
+                            continue;
+
+                        foreach (var message in change.Value.Messages)
+                        {
+                            // معالجة الرسائل النصية فقط
+                            if (message.Type == "text" && message.Text != null)
+                            {
+                                var phoneNumber = message.From;
+                                var messageText = message.Text.Body;
+
+                                Console.WriteLine($"📱 من: {phoneNumber}");
+                                Console.WriteLine($"💬 الرسالة: {messageText}");
+
+                                // معالجة الرسالة والحصول على الرد
+                                var responseText = _messageHandler.ProcessMessage(phoneNumber, messageText);
+
+                                // إرسال الرد
+                                await _whatsAppService.SendTextMessage(phoneNumber, responseText);
+                            }
+                        }
+                    }
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ في معالجة الرسالة: {ex.Message}");
+                Console.WriteLine($"❌ التفاصيل: {ex.StackTrace}");
+                return Ok(); // نرجع OK حتى لو في خطأ عشان Meta ميعيدش الطلب
+            }
         }
     }
 }
