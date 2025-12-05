@@ -15,6 +15,7 @@ builder.Services.AddOpenApi();
 // تسجيل الـ Services
 builder.Services.AddSingleton<SessionManager>();
 builder.Services.AddSingleton<MessageHandler>();
+builder.Services.AddSingleton<EmailService>();
 builder.Services.AddHttpClient<WhatsAppService>();
 
 var app = builder.Build();

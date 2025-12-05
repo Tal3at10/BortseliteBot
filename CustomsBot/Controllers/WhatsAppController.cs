@@ -13,17 +13,20 @@ namespace CustomsBot.Controllers
         private readonly SessionManager _sessionManager;
         private readonly MessageHandler _messageHandler;
         private readonly WhatsAppService _whatsAppService;
+        private readonly EmailService _emailService;
 
         public WhatsAppController(
             IConfiguration configuration,
             SessionManager sessionManager,
             MessageHandler messageHandler,
-            WhatsAppService whatsAppService)
+            WhatsAppService whatsAppService,
+            EmailService emailService)
         {
             _configuration = configuration;
             _sessionManager = sessionManager;
             _messageHandler = messageHandler;
             _whatsAppService = whatsAppService;
+            _emailService = emailService;
         }
 
         // 1. دالة التحقق (GET)
