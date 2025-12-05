@@ -57,6 +57,51 @@ namespace CustomsBot.Services
             }
         }
 
+        public async Task<bool> SendMediaToTelegram(byte[] mediaBytes, string customerPhone, string mediaType, string extension, string mimeType)
+        {
+            try
+            {
+                var botToken = _configuration["TelegramSettings:BotToken"];
+                var chatId = _configuration["TelegramSettings:ChatId"];
+
+                var url = mediaType == "image" 
+                    ? $"https://api.telegram.org/bot{botToken}/sendPhoto"
+                    : $"https://api.telegram.org/bot{botToken}/sendDocument";
+
+                using var formData = new MultipartFormDataContent();
+                formData.Add(new StringContent(chatId), "chat_id");
+                
+                var fileContent = new ByteArrayContent(mediaBytes);
+                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(mimeType);
+                
+                var fileName = $"media_{DateTime.Now:yyyyMMdd_HHmmss}{extension}";
+                formData.Add(fileContent, mediaType == "image" ? "photo" : "document", fileName);
+                
+                var caption = $"📎 ملف من العميل: {customerPhone}\n⏰ {DateTime.Now:dd/MM/yyyy hh:mm tt}";
+                formData.Add(new StringContent(caption), "caption");
+
+                var response = await _httpClient.PostAsync(url, formData);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"✅ تم إرسال الملف على Telegram بنجاح");
+                    return true;
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"❌ فشل إرسال الملف على Telegram: {response.StatusCode}");
+                    Console.WriteLine($"❌ التفاصيل: {errorContent}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ خطأ في إرسال الملف على Telegram: {ex.Message}");
+                return false;
+            }
+        }
+
         private string BuildTelegramMessage(string customerPhone, string serviceName, Dictionary<string, string> orderData)
         {
             var message = $@"🔔 <b>طلب جديد من CustomsBot</b>

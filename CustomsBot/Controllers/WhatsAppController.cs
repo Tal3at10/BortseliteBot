@@ -102,18 +102,30 @@ namespace CustomsBot.Controllers
                                 Console.WriteLine($"💬 الرسالة: {messageText}");
                             }
                             // معالجة الصور
-                            else if (message.Type == "image")
+                            else if (message.Type == "image" && message.Image != null)
                             {
                                 messageText = "[صورة]";
                                 Console.WriteLine($"📱 من: {phoneNumber}");
-                                Console.WriteLine($"📷 تم استلام صورة");
+                                Console.WriteLine($"📷 تم استلام صورة - ID: {message.Image.Id}");
+                                
+                                // إرسال الصورة على Telegram
+                                _ = Task.Run(async () =>
+                                {
+                                    await _whatsAppService.DownloadAndForwardMedia(message.Image.Id, phoneNumber, "image");
+                                });
                             }
                             // معالجة الملفات
-                            else if (message.Type == "document")
+                            else if (message.Type == "document" && message.Document != null)
                             {
                                 messageText = "[ملف]";
                                 Console.WriteLine($"📱 من: {phoneNumber}");
-                                Console.WriteLine($"📄 تم استلام ملف");
+                                Console.WriteLine($"📄 تم استلام ملف - ID: {message.Document.Id}");
+                                
+                                // إرسال الملف على Telegram
+                                _ = Task.Run(async () =>
+                                {
+                                    await _whatsAppService.DownloadAndForwardMedia(message.Document.Id, phoneNumber, "document");
+                                });
                             }
                             else
                             {
