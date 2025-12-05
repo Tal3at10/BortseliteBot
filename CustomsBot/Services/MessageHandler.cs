@@ -7,11 +7,13 @@ namespace CustomsBot.Services
     {
         private readonly SessionManager _sessionManager;
         private readonly EmailService _emailService;
+        private readonly TelegramService _telegramService;
 
-        public MessageHandler(SessionManager sessionManager, EmailService emailService)
+        public MessageHandler(SessionManager sessionManager, EmailService emailService, TelegramService telegramService)
         {
             _sessionManager = sessionManager;
             _emailService = emailService;
+            _telegramService = telegramService;
         }
 
         public string ProcessMessage(string phoneNumber, string messageText)
@@ -275,8 +277,8 @@ namespace CustomsBot.Services
 
 للعودة للقائمة الرئيسية، اكتب: قائمة";
 
-                    // إرسال إشعار بالبريد الإلكتروني
-                    _ = _emailService.SendOrderNotification(session.PhoneNumber, "التخليص الجمركي", session.CollectedData);
+                    // إرسال إشعار على Telegram
+                    _ = _telegramService.SendOrderNotification(session.PhoneNumber, "التخليص الجمركي", session.CollectedData);
 
                     _sessionManager.ResetSession(session.PhoneNumber);
                     return summary1;
@@ -358,8 +360,8 @@ namespace CustomsBot.Services
 
 للعودة للقائمة الرئيسية، اكتب: قائمة";
 
-                    // إرسال إشعار بالبريد الإلكتروني
-                    _ = _emailService.SendOrderNotification(session.PhoneNumber, "إصدار شهادة سابر", session.CollectedData);
+                    // إرسال إشعار على Telegram
+                    _ = _telegramService.SendOrderNotification(session.PhoneNumber, "إصدار شهادة سابر", session.CollectedData);
 
                     _sessionManager.ResetSession(session.PhoneNumber);
                     return summary2;
@@ -439,8 +441,8 @@ namespace CustomsBot.Services
 
 للعودة للقائمة الرئيسية، اكتب: قائمة";
 
-                    // إرسال إشعار بالبريد الإلكتروني
-                    _ = _emailService.SendOrderNotification(session.PhoneNumber, "الشحن الدولي", session.CollectedData);
+                    // إرسال إشعار على Telegram
+                    _ = _telegramService.SendOrderNotification(session.PhoneNumber, "الشحن الدولي", session.CollectedData);
 
                     _sessionManager.ResetSession(session.PhoneNumber);
                     return summary3;
@@ -519,8 +521,8 @@ namespace CustomsBot.Services
 
 للعودة للقائمة الرئيسية، اكتب: قائمة";
 
-                    // إرسال إشعار بالبريد الإلكتروني
-                    _ = _emailService.SendOrderNotification(session.PhoneNumber, "التصدير", session.CollectedData);
+                    // إرسال إشعار على Telegram
+                    _ = _telegramService.SendOrderNotification(session.PhoneNumber, "التصدير", session.CollectedData);
 
                     _sessionManager.ResetSession(session.PhoneNumber);
                     return summary4;
@@ -598,8 +600,8 @@ namespace CustomsBot.Services
 
 للعودة للقائمة الرئيسية، اكتب: قائمة";
 
-                    // إرسال إشعار بالبريد الإلكتروني
-                    _ = _emailService.SendOrderNotification(session.PhoneNumber, "النقل المحلي", session.CollectedData);
+                    // إرسال إشعار على Telegram
+                    _ = _telegramService.SendOrderNotification(session.PhoneNumber, "النقل المحلي", session.CollectedData);
 
                     _sessionManager.ResetSession(session.PhoneNumber);
                     return summary5;
@@ -660,8 +662,8 @@ namespace CustomsBot.Services
 
 للعودة للقائمة الرئيسية، اكتب: قائمة";
 
-                    // إرسال إشعار بالبريد الإلكتروني
-                    _ = _emailService.SendOrderNotification(session.PhoneNumber, "التخزين", session.CollectedData);
+                    // إرسال إشعار على Telegram
+                    _ = _telegramService.SendOrderNotification(session.PhoneNumber, "التخزين", session.CollectedData);
 
                     _sessionManager.ResetSession(session.PhoneNumber);
                     return summary6;
@@ -728,8 +730,8 @@ namespace CustomsBot.Services
 
 للعودة للقائمة الرئيسية، اكتب: قائمة";
 
-                    // إرسال إشعار بالبريد الإلكتروني
-                    _ = _emailService.SendOrderNotification(session.PhoneNumber, "التعبئة والتغليف", session.CollectedData);
+                    // إرسال إشعار على Telegram
+                    _ = _telegramService.SendOrderNotification(session.PhoneNumber, "التعبئة والتغليف", session.CollectedData);
 
                     _sessionManager.ResetSession(session.PhoneNumber);
                     return summary7;
@@ -766,8 +768,8 @@ namespace CustomsBot.Services
 
 للعودة للقائمة الرئيسية، اكتب: قائمة";
 
-                    // إرسال إشعار بالبريد الإلكتروني
-                    _ = _emailService.SendOrderNotification(session.PhoneNumber, "الفعاليات والمعارض", session.CollectedData);
+                    // إرسال إشعار على Telegram
+                    _ = _telegramService.SendOrderNotification(session.PhoneNumber, "الفعاليات والمعارض", session.CollectedData);
 
                     _sessionManager.ResetSession(session.PhoneNumber);
                     return summary8;

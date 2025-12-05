@@ -17,6 +17,7 @@ builder.Services.AddSingleton<SessionManager>();
 builder.Services.AddSingleton<MessageHandler>();
 builder.Services.AddSingleton<EmailService>();
 builder.Services.AddHttpClient<WhatsAppService>();
+builder.Services.AddHttpClient<TelegramService>();
 
 var app = builder.Build();
 
