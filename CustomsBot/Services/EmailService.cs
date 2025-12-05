@@ -25,7 +25,10 @@ namespace CustomsBot.Services
                 using var smtpClient = new SmtpClient(smtpHost, smtpPort)
                 {
                     EnableSsl = true,
-                    Credentials = new NetworkCredential(senderEmail, senderPassword)
+                    Credentials = new NetworkCredential(senderEmail, senderPassword),
+                    Timeout = 30000, // 30 seconds
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false
                 };
 
                 var mailMessage = new MailMessage
@@ -45,6 +48,11 @@ namespace CustomsBot.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ خطأ في إرسال البريد الإلكتروني: {ex.Message}");
+                Console.WriteLine($"❌ التفاصيل الكاملة: {ex.ToString()}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"❌ Inner Exception: {ex.InnerException.Message}");
+                }
                 return false;
             }
         }
