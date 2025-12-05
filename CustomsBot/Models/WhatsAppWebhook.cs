@@ -82,6 +82,12 @@ namespace CustomsBot.Models
         [JsonPropertyName("text")]
         public TextMessage? Text { get; set; }
 
+        [JsonPropertyName("image")]
+        public MediaMessage? Image { get; set; }
+
+        [JsonPropertyName("document")]
+        public MediaMessage? Document { get; set; }
+
         [JsonPropertyName("type")]
         public string Type { get; set; } = string.Empty;
     }
@@ -90,5 +96,20 @@ namespace CustomsBot.Models
     {
         [JsonPropertyName("body")]
         public string Body { get; set; } = string.Empty;
+    }
+
+    public class MediaMessage
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
+
+        [JsonPropertyName("mime_type")]
+        public string MimeType { get; set; } = string.Empty;
+
+        [JsonPropertyName("sha256")]
+        public string Sha256 { get; set; } = string.Empty;
+
+        [JsonPropertyName("caption")]
+        public string? Caption { get; set; }
     }
 }

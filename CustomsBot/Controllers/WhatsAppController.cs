@@ -88,21 +88,41 @@ namespace CustomsBot.Controllers
 
                         foreach (var message in change.Value.Messages)
                         {
-                            // معالجة الرسائل النصية فقط
+                            var phoneNumber = message.From;
+                            string messageText = string.Empty;
+
+                            // معالجة الرسائل النصية
                             if (message.Type == "text" && message.Text != null)
                             {
-                                var phoneNumber = message.From;
-                                var messageText = message.Text.Body;
-
+                                messageText = message.Text.Body;
                                 Console.WriteLine($"📱 من: {phoneNumber}");
                                 Console.WriteLine($"💬 الرسالة: {messageText}");
-
-                                // معالجة الرسالة والحصول على الرد
-                                var responseText = _messageHandler.ProcessMessage(phoneNumber, messageText);
-
-                                // إرسال الرد
-                                await _whatsAppService.SendTextMessage(phoneNumber, responseText);
                             }
+                            // معالجة الصور
+                            else if (message.Type == "image")
+                            {
+                                messageText = "[صورة]";
+                                Console.WriteLine($"📱 من: {phoneNumber}");
+                                Console.WriteLine($"📷 تم استلام صورة");
+                            }
+                            // معالجة الملفات
+                            else if (message.Type == "document")
+                            {
+                                messageText = "[ملف]";
+                                Console.WriteLine($"📱 من: {phoneNumber}");
+                                Console.WriteLine($"📄 تم استلام ملف");
+                            }
+                            else
+                            {
+                                // تجاهل أنواع الرسائل الأخرى
+                                continue;
+                            }
+
+                            // معالجة الرسالة والحصول على الرد
+                            var responseText = _messageHandler.ProcessMessage(phoneNumber, messageText);
+
+                            // إرسال الرد
+                            await _whatsAppService.SendTextMessage(phoneNumber, responseText);
                         }
                     }
                 }
